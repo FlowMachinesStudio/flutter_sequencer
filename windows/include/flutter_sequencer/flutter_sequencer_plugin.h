@@ -1,0 +1,4 @@
+#include "./flutter_sequencer_plugin_c_api.h"
+
+#define FlutterSequencerPluginRegisterWithRegistrar FlutterSequencerPluginCApiRegisterWithRegistrar
+
