@@ -9,7 +9,9 @@ import 'utils/isolate.dart';
 
 final DynamicLibrary nativeLib = Platform.isAndroid
     ? DynamicLibrary.open('libflutter_sequencer.so')
-    : DynamicLibrary.executable();
+    : (Platform.isWindows
+        ? DynamicLibrary.open('flutter_sequencer_plugin.dll')
+        : DynamicLibrary.executable());
 
 final nRegisterPostCObject = nativeLib.lookupFunction<
     Void Function(
