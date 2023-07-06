@@ -40,7 +40,8 @@ FlutterSequencerPlugin::~FlutterSequencerPlugin() {}
 void FlutterSequencerPlugin::HandleMethodCall(
     const flutter::MethodCall<flutter::EncodableValue> &method_call,
     std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result) {
-  if (method_call.method_name().compare("getPlatformVersion") == 0) {
+  auto method_name = method_call.method_name();
+  if (method_name.compare("getPlatformVersion") == 0) {
     std::ostringstream version_stream;
     version_stream << "Windows ";
     if (IsWindows10OrGreater()) {
@@ -51,9 +52,33 @@ void FlutterSequencerPlugin::HandleMethodCall(
       version_stream << "7";
     }
     result->Success(flutter::EncodableValue(version_stream.str()));
+  } else if  (method_name.compare("setupAssetManager") == 0) {
+    result->Success(0);
   } else {
+    OutputDebugStringA(method_name.c_str());
     result->NotImplemented();
   }
 }
 
 }  // namespace flutter_sequencer
+
+////////////////////////////////////
+#define EXPORT __declspec(dllexport)
+typedef void* Dart_PostCObjectType;
+typedef void* Dart_Port;
+
+Dart_PostCObjectType dartPostCObject = NULL;
+Dart_Port callbackPort;
+
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
+EXPORT void RegisterDart_PostCObject(Dart_PostCObjectType _dartPostCObject) {
+    dartPostCObject = _dartPostCObject;
+}
+
+
+#if defined(__cplusplus)
+}  // extern "C"
+#endif
