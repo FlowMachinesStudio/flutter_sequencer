@@ -1,3 +1,4 @@
+#include <flsPlatform.h>
 #include <algorithm>
 #include "SchedulerEvent.h"
 
@@ -16,7 +17,7 @@ VolumeEventData::VolumeEventData(uint8_t* data) {
 }
 
 void rawEventDataToEvents(const uint8_t* rawEventData, uint32_t eventsCount, struct SchedulerEvent* events) {
-    for (int32_t i = 0; i < eventsCount; i++) {
+    for (uint32_t i = 0; i < eventsCount; i++) {
         const uint8_t* nextEventPtr = rawEventData + (i * sizeof(SchedulerEvent));
         
         events[i].frame = *(position_frame_t*)nextEventPtr;
