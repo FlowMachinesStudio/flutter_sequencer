@@ -1,10 +1,11 @@
+#include<flsPlatform.h>
 #include <thread>
 #include "SharedInstruments/SfizzSamplerInstrument.h"
-#include "AndroidEngine/AndroidEngine.h"
-#include "AndroidInstruments/SoundFontInstrument.h"
+#include "WinEngine/WinEngine.h"
+#include "WinInstruments/SoundFontInstrument.h"
 #include "Utils/OptionArray.h"
 
-std::unique_ptr<AndroidEngine> engine;
+std::unique_ptr<WinEngine> engine;
 
 void check_engine() {
     if (engine == nullptr) {
@@ -21,17 +22,17 @@ void setInstrumentOutputFormat(IInstrument* instrument) {
 }
 
 extern "C" {
-    __attribute__((visibility("default"))) __attribute__((used))
+    DLL_EXPORT
     void setup_engine(Dart_Port sampleRateCallbackPort) {
-        engine = std::make_unique<AndroidEngine>(sampleRateCallbackPort);
+        engine = std::make_unique<WinEngine>(sampleRateCallbackPort);
     }
 
-    __attribute__((visibility("default"))) __attribute__((used))
+    DLL_EXPORT
     void destroy_engine() {
         engine.reset();
     }
 
-    __attribute__((visibility("default"))) __attribute__((used))
+    DLL_EXPORT
     void add_track_sf2(const char* filename, bool isAsset, int32_t presetIndex, Dart_Port callbackPort) {
         check_engine();
 
@@ -52,7 +53,7 @@ extern "C" {
         }).detach();
     }
 
-    __attribute__((visibility("default"))) __attribute__((used))
+    DLL_EXPORT
     void add_track_sfz(const char* filename, const char* tuningFilename, Dart_Port callbackPort) {
         check_engine();
 
@@ -74,7 +75,7 @@ extern "C" {
         }).detach();
     }
 
-    __attribute__((visibility("default"))) __attribute__((used))
+    DLL_EXPORT
     void add_track_sfz_string(const char* sampleRoot, const char* sfzString, const char* tuningString, Dart_Port callbackPort) {
         check_engine();
 
@@ -96,83 +97,86 @@ extern "C" {
         }).detach();
     }
 
-__attribute__((visibility("default"))) __attribute__((used))
+DLL_EXPORT
     void remove_track(track_index_t trackIndex) {
         check_engine();
 
         engine->mSchedulerMixer.removeTrack(trackIndex);
     }
 
-    __attribute__((visibility("default"))) __attribute__((used))
+    DLL_EXPORT
     void reset_track(track_index_t trackIndex) {
         check_engine();
 
         engine->mSchedulerMixer.resetTrack(trackIndex);
     }
 
-    __attribute__((visibility("default"))) __attribute__((used))
+    DLL_EXPORT
     float get_track_volume(track_index_t trackIndex) {
         check_engine();
 
         return engine->mSchedulerMixer.getLevel(trackIndex);
     }
 
-    __attribute__((visibility("default"))) __attribute__((used))
+    DLL_EXPORT
     int32_t get_position() {
         check_engine();
 
         return engine->mSchedulerMixer.getPosition();
     }
 
-    __attribute__((visibility("default"))) __attribute__((used))
+    DLL_EXPORT
     uint64_t get_last_render_time_us() {
         check_engine();
 
         return engine->mSchedulerMixer.getLastRenderTimeUs();
     }
 
-    __attribute__((visibility("default"))) __attribute__((used))
+    DLL_EXPORT
     uint32_t get_buffer_available_count(track_index_t trackIndex) {
         return engine->mSchedulerMixer.getBufferAvailableCount(trackIndex);
     }
 
-    __attribute__((visibility("default"))) __attribute__((used))
+    DLL_EXPORT
     void handle_events_now(track_index_t trackIndex, const uint8_t* eventData, int32_t eventsCount) {
         check_engine();
 
-        SchedulerEvent events[eventsCount];
+        SchedulerEvent *events= new SchedulerEvent[eventsCount];
 
         rawEventDataToEvents(eventData, eventsCount, events);
 
         engine->mSchedulerMixer.handleEventsNow(trackIndex, events, eventsCount);
+        delete[] events;
     }
 
-    __attribute__((visibility("default"))) __attribute__((used))
+    DLL_EXPORT
     int32_t schedule_events(track_index_t trackIndex, const uint8_t* eventData, int32_t eventsCount) {
         check_engine();
 
-        SchedulerEvent events[eventsCount];
+        SchedulerEvent *events = new SchedulerEvent[eventsCount];
 
         rawEventDataToEvents(eventData, eventsCount, events);
 
-        return engine->mSchedulerMixer.scheduleEvents(trackIndex, events, eventsCount);
+        uint32_t ret = engine->mSchedulerMixer.scheduleEvents(trackIndex, events, eventsCount);
+        delete[] events;
+        return ret;
     }
 
-    __attribute__((visibility("default"))) __attribute__((used))
+    DLL_EXPORT
     void clear_events(track_index_t trackIndex, position_frame_t fromFrame) {
         check_engine();
 
         return engine->mSchedulerMixer.clearEvents(trackIndex, fromFrame);
     }
 
-    __attribute__((visibility("default"))) __attribute__((used))
+    DLL_EXPORT
     void engine_play() {
         check_engine();
 
         engine->play();
     }
 
-    __attribute__((visibility("default"))) __attribute__((used))
+    DLL_EXPORT
     void engine_pause() {
         check_engine();
 

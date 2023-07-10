@@ -18,6 +18,7 @@ INCLUDE_DIRECTORIES(${TSF_DIR}
   ../shared/Classes/Scheduler
   ../shared/Classes/IInstrument
   ../shared
+  ./third_party/sfizz/src
   ./src/main/cpp
 )
 
@@ -70,9 +71,6 @@ target_compile_definitions(${PLUGIN_NAME} PRIVATE FLUTTER_PLUGIN_IMPL)
 # dependencies here.
 target_include_directories(${PLUGIN_NAME} INTERFACE
   "${CMAKE_CURRENT_SOURCE_DIR}/include"
-  "../ios/Classes/CallbackManager"
-  "../ios/Classes/Scheduler"
-  "../ios/Classes/IInstrument"
   )
 target_link_libraries(${PLUGIN_NAME} PRIVATE flutter flutter_wrapper_plugin)
 

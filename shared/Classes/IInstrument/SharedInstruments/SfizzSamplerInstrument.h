@@ -13,8 +13,7 @@ public:
 
     bool setOutputFormat(int32_t sampleRate, bool isStereo) override {
         mIsStereo = isStereo;
-        mSampler->setSampleRate(sampleRate);
-
+        mSampler->setSampleRate(static_cast<float>(sampleRate));
         return true;
     }
 
@@ -45,8 +44,8 @@ public:
     }
 
     void renderAudio(float *audioData, int32_t numFrames) override {
-        float leftBuffer[numFrames];
-        float rightBuffer[numFrames];
+        float* leftBuffer = new float[numFrames];
+        float* rightBuffer = new float [numFrames];
         float* buffers[2];
 
         buffers[0] = leftBuffer;
@@ -68,6 +67,10 @@ public:
                 audioData[f] = (buffers[0][f] + buffers[1][f]) / 2;
             }
         }
+
+        delete[] leftBuffer;
+        delete[] rightBuffer;
+
     }
 
     void handleMidiEvent(uint8_t status, uint8_t data1, uint8_t data2) override {
