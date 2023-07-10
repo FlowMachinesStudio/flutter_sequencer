@@ -1,5 +1,8 @@
 #!/bin/bash
 
+script_dir=$(cd $(dirname ${BASH_SOURCE:-$0}); pwd)
+pushd ${script_dir}
+
 if [ "$1" = "clean" ]; then
   rm -rf "./third_party"
   exit
@@ -43,4 +46,6 @@ if [ ! -d "./third_party" ]; then
     -B build -S .
 
   cmake --build build -j
+  cmake --build build --config Release -j
+  popd
 fi
