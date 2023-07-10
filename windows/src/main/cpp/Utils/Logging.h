@@ -6,8 +6,17 @@
 #define LOG_INFO "info"
 #define LOG_ERROR "error"
 
-void __log_print() {
+void __log_print(const char* level, const char* appName, const char* messageFormat, ...) {
     // FIXME:...
+    /*
+    std::cout << "[" << level << "] " << appName << ": ";
+    va_list args;
+    va_start(args, messageFormat);
+    vprintf(messageFormat, args);
+    va_end(args);
+
+    std::cout << std::endl;
+    */
 }
 
 #define LOGI(...) ((void)__log_print(LOG_INFO, APP_NAME, __VA_ARGS__))
