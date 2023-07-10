@@ -1,7 +1,8 @@
-#include "AndroidEngine.h"
+#include <flsPlatform.h>
+#include "WinEngine.h"
 #include "../Utils/Logging.h"
 
-oboe::DataCallbackResult AndroidEngine::onAudioReady(oboe::AudioStream *oboeStream, void *audioData, int32_t numFrames) {
+oboe::DataCallbackResult WinEngine::onAudioReady(oboe::AudioStream *oboeStream, void *audioData, int32_t numFrames) {
     float* outputBuffer = static_cast<float *>(audioData);
 
     mSchedulerMixer.renderAudio(outputBuffer, numFrames);
@@ -9,8 +10,9 @@ oboe::DataCallbackResult AndroidEngine::onAudioReady(oboe::AudioStream *oboeStre
     return oboe::DataCallbackResult::Continue;
 }
 
-AndroidEngine::AndroidEngine(Dart_Port sampleRateCallbackPort) {
+WinEngine::WinEngine(Dart_Port sampleRateCallbackPort) {
     oboe::AudioStreamBuilder builder;
+
     builder.setSharingMode(oboe::SharingMode::Shared)
             ->setPerformanceMode(oboe::PerformanceMode::LowLatency)
             ->setChannelCount(oboe::ChannelCount::Stereo)
@@ -20,11 +22,11 @@ AndroidEngine::AndroidEngine(Dart_Port sampleRateCallbackPort) {
             ->openManagedStream(mOutStream);
 
     mSchedulerMixer.setChannelCount(mOutStream->getChannelCount());
-
     callbackToDartInt32(sampleRateCallbackPort, mOutStream->getSampleRate());
+
 };
 
-AndroidEngine::~AndroidEngine() {
+WinEngine::~WinEngine() {
     mSchedulerMixer.pause();
 
     oboe::Result result = mOutStream->close();
@@ -35,19 +37,19 @@ AndroidEngine::~AndroidEngine() {
     }
 }
 
-int32_t AndroidEngine::getSampleRate() {
+int32_t WinEngine::getSampleRate() {
     return mOutStream->getSampleRate();
 }
 
-int32_t AndroidEngine::getChannelCount() {
+int32_t WinEngine::getChannelCount() {
     return mOutStream->getChannelCount();
 }
 
-int32_t AndroidEngine::getBufferSize() {
+int32_t WinEngine::getBufferSize() {
     return mOutStream->getBufferSizeInFrames();
 }
 
-void AndroidEngine::play() {
+void WinEngine::play() {
     mSchedulerMixer.play();
 
     auto streamState = mOutStream->getState();
@@ -64,7 +66,7 @@ void AndroidEngine::play() {
     }
 }
 
-void AndroidEngine::pause() {
+void WinEngine::pause() {
     mSchedulerMixer.pause();
 
     oboe::Result result = mOutStream->requestPause();

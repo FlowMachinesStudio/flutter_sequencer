@@ -1,15 +1,15 @@
-#ifndef ANDROID_ENGINE_H
-#define ANDROID_ENGINE_H
+#ifndef WIN_ENGINE_H
+#define WIN_ENGINE_H
 
-#include <oboe/Oboe.h>
+#include "./Oboe_win.h"
 #include "CallbackManager.h"
 #include "IInstrument.h"
-#include "../AndroidInstruments/Mixer.h"
+#include "../WinInstruments/Mixer.h"
 
-class AndroidEngine : public oboe::AudioStreamCallback {
+class WinEngine : public oboe::AudioStreamCallback {
 public:
-    explicit AndroidEngine(Dart_Port sampleRateCallbackPort);
-    ~AndroidEngine();
+    explicit WinEngine(Dart_Port sampleRateCallbackPort);
+    ~WinEngine();
 
     oboe::DataCallbackResult onAudioReady(oboe::AudioStream *oboeStream, void *audioData, int32_t numFrames) override;
 
@@ -26,4 +26,4 @@ private:
     static int constexpr kSampleRate = 44100;
 };
 
-#endif //ANDROID_ENGINE_H
+#endif //WIN_ENGINE_H
