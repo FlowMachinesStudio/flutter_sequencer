@@ -21,6 +21,21 @@ void setInstrumentOutputFormat(IInstrument* instrument) {
     instrument->setOutputFormat(sampleRate, isStereo);
 }
 
+void __log_print(const char* level,
+    const char* appName, const char* messageFormat, ...) {
+    // FIXME:...
+    /*
+    std::cout << "[" << level << "] " << appName << ": ";
+    va_list args;
+    va_start(args, messageFormat);
+    vprintf(messageFormat, args);
+    va_end(args);
+
+    std::cout << std::endl;
+    */
+}
+
+
 extern "C" {
     DLL_EXPORT
     void setup_engine(Dart_Port sampleRateCallbackPort) {
