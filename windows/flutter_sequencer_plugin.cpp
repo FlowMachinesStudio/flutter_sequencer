@@ -63,6 +63,7 @@ void FlutterSequencerPlugin::HandleMethodCall(
 }  // namespace flutter_sequencer
 
 ////////////////////////////////////
+#if 0
 #define EXPORT __declspec(dllexport)
 typedef void* Dart_PostCObjectType;
 typedef void* Dart_Port;
@@ -82,3 +83,4 @@ EXPORT void RegisterDart_PostCObject(Dart_PostCObjectType _dartPostCObject) {
 #if defined(__cplusplus)
 }  // extern "C"
 #endif
+#endif //0

@@ -12,10 +12,38 @@ project(${PROJECT_NAME} LANGUAGES CXX)
 # not be changed
 set(PLUGIN_NAME "flutter_sequencer_plugin")
 
+SET(TSF_DIR ./third_party/TinySoundFont)
+INCLUDE_DIRECTORIES(${TSF_DIR}
+  ../shared/Classes/CallbackManager
+  ../shared/Classes/Scheduler
+  ../shared/Classes/IInstrument
+  ../shared
+  ./src/main/cpp
+)
+
 # Any new source files that you add to the plugin should be added here.
 list(APPEND PLUGIN_SOURCES
   "flutter_sequencer_plugin.cpp"
   "flutter_sequencer_plugin.h"
+  "../shared/Classes/CallbackManager/CallbackManager.h"
+  "../shared/Classes/CallbackManager/CallbackManager.cpp"
+  "../shared/Classes/Scheduler/BaseScheduler.h"
+  "../shared/Classes/Scheduler/BaseScheduler.cpp"
+  "../shared/Classes/Scheduler/Buffer.h"
+  "../shared/Classes/Scheduler/SchedulerEvent.h"
+  "../shared/Classes/Scheduler/SchedulerEvent.cpp"
+  "./src/main/cpp/WinEngine/WinEngine.h"
+  "./src/main/cpp/WinEngine/WinEngine.cpp"
+  "./src/main/cpp/WinEngine/Oboe_win.h"
+  "./src/main/cpp/WinEngine/Oboe_win.cpp"
+  "../shared/Classes/IInstrument/IInstrument.h"
+  "../shared/Classes/IInstrument/SharedInstruments/SfizzSamplerInstrument.h"
+  "./src/main/cpp/WinInstruments/Mixer.h"
+  "./src/main/cpp/WinInstruments/SoundFontInstrument.h"
+  "./src/main/cpp/Utils/AssetManager.h"
+  "./src/main/cpp/Utils/Logging.h"
+  "./src/main/cpp/Utils/OptionArray.h"
+  "./src/main/cpp/Plugin.cpp"
 )
 
 # Define the plugin library target. Its name must not be changed (see comment
@@ -41,7 +69,11 @@ target_compile_definitions(${PLUGIN_NAME} PRIVATE FLUTTER_PLUGIN_IMPL)
 # Source include directories and library dependencies. Add any plugin-specific
 # dependencies here.
 target_include_directories(${PLUGIN_NAME} INTERFACE
-  "${CMAKE_CURRENT_SOURCE_DIR}/include")
+  "${CMAKE_CURRENT_SOURCE_DIR}/include"
+  "../ios/Classes/CallbackManager"
+  "../ios/Classes/Scheduler"
+  "../ios/Classes/IInstrument"
+  )
 target_link_libraries(${PLUGIN_NAME} PRIVATE flutter flutter_wrapper_plugin)
 
 # List of absolute paths to libraries that should be bundled with the plugin.
