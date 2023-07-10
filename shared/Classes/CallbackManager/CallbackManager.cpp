@@ -1,3 +1,4 @@
+#include <flsPlatform.h>
 #include <vector>
 #include <stdlib.h>
 #include "CallbackManager.h"
@@ -37,7 +38,8 @@ void callbackToDartInt32(Dart_Port callback_port, int32_t value) {
 void callbackToDartInt32Array(Dart_Port callbackPort, int length, int32_t* values) {
     if (dartPostCObject == NULL) return;
 
-    Dart_CObject *valueObjects[length];
+    Dart_CObject **valueObjects = new Dart_CObject * [length];
+
     int i;
     for (i = 0; i < length; ++i) {
         auto valueObject = new Dart_CObject;
@@ -60,6 +62,7 @@ void callbackToDartInt32Array(Dart_Port callbackPort, int length, int32_t* value
     for (i = 0; i < length; i++) {
         delete valueObjects[i];
     }
+    delete[] valueObjects;
 }
 
 void callbackToDartStrArray(Dart_Port callbackPort, int length, char** values) {
