@@ -27,6 +27,10 @@ if [ ! -d "./third_party" ]; then
   cloneAndBuildThirdPartyRepo "TinySoundFont" "https://github.com/schellingb/TinySoundFont.git" "bf574519e601202c3a9d27a74f345921277eed39" "./third_party/TinySoundFont"
   cloneAndBuildThirdPartyRepo "sfizz" "https://github.com/sfztools/sfizz.git" "fc1f0451cebd8996992cbc4f983fcf76b03295c5" "./third_party/sfizz"
 
+  if [ "$1" = "nobuild" ]; then
+    exit
+  fi
+
   pushd ./third_party/sfizz
   cmake -DCMAKE_BUILD_TYPE=sfizz_static \
     -DSFIZZ_JACK=OFF \
