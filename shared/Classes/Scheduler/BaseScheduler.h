@@ -7,7 +7,9 @@ typedef int32_t track_index_t;
 #ifdef __cplusplus
 #include <memory>
 #include <unordered_map>
+#ifndef _WIN32
 #include <sys/time.h>
+#endif //#ifnde _WIN32
 #include <Buffer.h>
 #include <CallbackManager.h>
 #include <SchedulerEvent.h>

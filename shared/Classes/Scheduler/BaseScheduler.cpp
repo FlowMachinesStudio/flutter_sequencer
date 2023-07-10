@@ -1,10 +1,15 @@
+#include <flsPlatform.h>
 #include "BaseScheduler.h"
 
 #include <limits>
 #include "SchedulerEvent.h"
 
 track_index_t BaseScheduler::addTrack() {
+#ifdef _WIN32
+    auto maxTracks = INT_MAX;
+#else
     auto maxTracks = std::numeric_limits<track_index_t>::max();
+#endif
     
     for (track_index_t trackIndex = 0; trackIndex < maxTracks; trackIndex++) {
         if (mBufferMap[trackIndex] == nullptr) {
@@ -75,9 +80,23 @@ position_frame_t BaseScheduler::getPosition() {
 }
 
 uint64_t BaseScheduler::getLastRenderTimeUs() {
+#ifdef _WIN32
+    FILETIME ft;
+    GetSystemTimeAsFileTime(&ft);
+
+    ULARGE_INTEGER time;
+    time.LowPart = ft.dwLowDateTime;
+    time.HighPart = ft.dwHighDateTime;
+
+    const uint64_t ticksPerMicrosecond = 10;
+    uint64_t microseconds = time.QuadPart / ticksPerMicrosecond;
+
+    return microseconds;
+#else
     timeval t;
     gettimeofday(&t, NULL);
     return t.tv_sec*uint64_t(1000000) + uint64_t(t.tv_usec);
+#endif
 }
 
 void BaseScheduler::handleFrames(track_index_t trackIndex, uint32_t numFramesToRender) {
