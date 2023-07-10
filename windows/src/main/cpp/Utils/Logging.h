@@ -1,12 +1,17 @@
-#ifndef ANDROID_LOGGING_H
-#define ANDROID_LOGGING_H
-
-#include <android/log.h>
+#ifndef WIN_LOGGING_H
+#define WIN_LOGGING_H
 
 #define APP_NAME "FLUTTER_SEQUENCER"
+#define APP_NAME "FLUTTER_SEQUENCER"
+#define LOG_INFO "info"
+#define LOG_ERROR "error"
 
-#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, APP_NAME, __VA_ARGS__))
-#define LOGE(...) ((void)__android_log_print(ANDROID_LOG_ERROR, APP_NAME, __VA_ARGS__))
+void __log_print() {
+    // FIXME:...
+}
 
-#endif //ANDROID_LOGGING_H
+#define LOGI(...) ((void)__log_print(LOG_INFO, APP_NAME, __VA_ARGS__))
+#define LOGE(...) ((void)__log_print(LOG_ERROR, APP_NAME, __VA_ARGS__))
+
+#endif //WIN_LOGGING_H
 
