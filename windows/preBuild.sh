@@ -36,6 +36,7 @@ if [ ! -d "./third_party" ]; then
 
   pushd ./third_party/sfizz
   cmake -DCMAKE_BUILD_TYPE=sfizz_static \
+    -DSFIZZ_STATIC_DEPENDENCIES=ON \
     -DSFIZZ_JACK=OFF \
     -DSFIZZ_RENDER=OFF \
     -DSFIZZ_LV2=OFF \
