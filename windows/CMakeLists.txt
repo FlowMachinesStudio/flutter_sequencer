@@ -18,7 +18,7 @@ INCLUDE_DIRECTORIES(${TSF_DIR}
   ../shared/Classes/Scheduler
   ../shared/Classes/IInstrument
   ../shared
-  ./third_party/sfizz/src
+  # ./third_party/sfizz/src
   ./src/main/cpp
 )
 
