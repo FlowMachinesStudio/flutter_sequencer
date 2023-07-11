@@ -1,6 +1,8 @@
 #include<flsPlatform.h>
 #include <thread>
+#ifdef USE_SFIZZ
 #include "SharedInstruments/SfizzSamplerInstrument.h"
+#endif // #ifdef USE_SFIZZ
 #include "WinEngine/WinEngine.h"
 #include "WinInstruments/SoundFontInstrument.h"
 #include "Utils/OptionArray.h"
@@ -70,6 +72,7 @@ extern "C" {
 
     DLL_EXPORT
     void add_track_sfz(const char* filename, const char* tuningFilename, Dart_Port callbackPort) {
+#ifdef USE_SZIFF
         check_engine();
 
         std::thread([=]() {
@@ -88,12 +91,15 @@ extern "C" {
                 callbackToDartInt32(callbackPort, -1);
             }
         }).detach();
+#else // USE_SFIZZ
+        LOGE("sfizz: disabled");
+#endif // USE_SFIZZ
     }
 
     DLL_EXPORT
     void add_track_sfz_string(const char* sampleRoot, const char* sfzString, const char* tuningString, Dart_Port callbackPort) {
         check_engine();
-
+#ifdef USE_SZIFF
         std::thread([=]() {
             auto sfzInstrument = new SfizzSamplerInstrument();
             setInstrumentOutputFormat(sfzInstrument);
@@ -110,6 +116,9 @@ extern "C" {
                 callbackToDartInt32(callbackPort, -1);
             }
         }).detach();
+#else // USE_SFIZZ
+        LOGE("sfizz: disabled");
+#endif // USE_SFIZZ
     }
 
 DLL_EXPORT

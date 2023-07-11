@@ -8,4 +8,6 @@
 
 #define DLL_EXPORT __declspec(dllexport)
 
+// #define USE_SFIZZ
+
 #endif // FLS_PLATFORM_WIN_H

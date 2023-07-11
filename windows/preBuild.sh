@@ -28,6 +28,11 @@ if [ ! -d "./third_party" ]; then
   mkdir "./third_party"
 
   cloneAndBuildThirdPartyRepo "TinySoundFont" "https://github.com/schellingb/TinySoundFont.git" "bf574519e601202c3a9d27a74f345921277eed39" "./third_party/TinySoundFont"
+
+  exit
+
+  #################################################################
+  # FIXME: enable the follows to support sfizz.
   cloneAndBuildThirdPartyRepo "sfizz" "https://github.com/sfztools/sfizz.git" "fc1f0451cebd8996992cbc4f983fcf76b03295c5" "./third_party/sfizz"
 
   if [ "$1" = "nobuild" ]; then

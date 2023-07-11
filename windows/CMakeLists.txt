@@ -38,7 +38,7 @@ list(APPEND PLUGIN_SOURCES
   "./src/main/cpp/WinEngine/Oboe_win.h"
   "./src/main/cpp/WinEngine/Oboe_win.cpp"
   "../shared/Classes/IInstrument/IInstrument.h"
-  "../shared/Classes/IInstrument/SharedInstruments/SfizzSamplerInstrument.h"
+  # "../shared/Classes/IInstrument/SharedInstruments/SfizzSamplerInstrument.h"
   "./src/main/cpp/WinInstruments/Mixer.h"
   "./src/main/cpp/WinInstruments/SoundFontInstrument.h"
   "./src/main/cpp/Utils/AssetManager.h"
@@ -74,6 +74,7 @@ target_include_directories(${PLUGIN_NAME} INTERFACE
   )
 
 #######################################################
+# fixme: enable sfizz...
 set(sfizz_static_lib_path "${CMAKE_CURRENT_SOURCE_DIR}/third_party/sfizz/build/src/Debug/sfizz_static.lib")
 
 message(STATUS "FIXME CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
@@ -83,8 +84,9 @@ if(CMAKE_BUILD_TYPE MATCHES "Debug")
 elseif(CMAKE_BUILD_TYPE MATCHES "Release")
 set(sfizz_static_lib_path "${CMAKE_CURRENT_SOURCE_DIR}/third_party/sfizz/build/src/Release/sfizz_static.lib")
 endif()
+#target_link_libraries(${PLUGIN_NAME} PRIVATE flutter flutter_wrapper_plugin "${sfizz_static_lib_path}")
 #######################################################
-target_link_libraries(${PLUGIN_NAME} PRIVATE flutter flutter_wrapper_plugin "${sfizz_static_lib_path}")
+target_link_libraries(${PLUGIN_NAME} PRIVATE flutter flutter_wrapper_plugin)
 
 # List of absolute paths to libraries that should be bundled with the plugin.
 # This list could contain prebuilt libraries, or libraries created by an
