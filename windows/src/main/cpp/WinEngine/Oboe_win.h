@@ -518,6 +518,7 @@ enum class SharingMode : int32_t
     class AudioStreamErrorCallback;
 
     struct StreamDeleterFunctor;
+    class AudioStream;
     using ManagedStream = std::unique_ptr<AudioStream, StreamDeleterFunctor>;
 
     class AudioStreamCallback : public AudioStreamDataCallback,
@@ -566,10 +567,11 @@ enum class SharingMode : int32_t
             return this;
         }
         Result openManagedStream(ManagedStream &stream);
+        Result openStream(AudioStream **stream);
+        Result AudioStreamBuilder::openStream(std::shared_ptr<AudioStream> &sharedStream);
     };
 
-    
-    
+    class AudioStream;
     class AudioStream : public AudioStreamBase
     {
         friend class AudioStreamBuilder; // allow access to setWeakThis() and lockWeakThis()
@@ -587,9 +589,15 @@ enum class SharingMode : int32_t
 
         virtual Result close();
 
+        void setWeakThis(std::shared_ptr<oboe::AudioStream>& sharedStream) {
+            mWeakThis = sharedStream;
+        }
+
         virtual StreamState getState() = 0;
          virtual Result requestPause() = 0;
          virtual Result requestStart() = 0;
+
+         std::weak_ptr<AudioStream> mWeakThis; // weak pointer to this object
     };
 
     struct StreamDeleterFunctor
@@ -603,6 +611,19 @@ enum class SharingMode : int32_t
             delete audioStream;
         }
     };
+
+    class AudioStreamAAudioWin : public AudioStream {
+    public:
+        AudioStreamAAudioWin();
+        explicit AudioStreamAAudioWin(const AudioStreamBuilder &builder);
+
+        virtual ~AudioStreamAAudioWin() = default;
+
+        virtual StreamState getState() override;
+        virtual Result requestPause() override;
+        virtual Result requestStart() override;
+    };
+
 }; // namespace
 
 #endif // OBOE_WIN_H
