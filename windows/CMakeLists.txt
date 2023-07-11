@@ -72,7 +72,19 @@ target_compile_definitions(${PLUGIN_NAME} PRIVATE FLUTTER_PLUGIN_IMPL)
 target_include_directories(${PLUGIN_NAME} INTERFACE
   "${CMAKE_CURRENT_SOURCE_DIR}/include"
   )
-target_link_libraries(${PLUGIN_NAME} PRIVATE flutter flutter_wrapper_plugin)
+
+#######################################################
+set(sfizz_static_lib_path "${CMAKE_CURRENT_SOURCE_DIR}/third_party/sfizz/build/src/Debug/sfizz_static.lib")
+
+message(STATUS "FIXME CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
+# FIXME: CMAKE_BUILD_TYPE=OFF, so any variable to detect Debug/Release build?
+if(CMAKE_BUILD_TYPE MATCHES "Debug")
+    set(sfizz_static_lib_path "${CMAKE_CURRENT_SOURCE_DIR}/third_party/sfizz/build/src/Debug/sfizz_static.lib")
+elseif(CMAKE_BUILD_TYPE MATCHES "Release")
+set(sfizz_static_lib_path "${CMAKE_CURRENT_SOURCE_DIR}/third_party/sfizz/build/src/Release/sfizz_static.lib")
+endif()
+#######################################################
+target_link_libraries(${PLUGIN_NAME} PRIVATE flutter flutter_wrapper_plugin "${sfizz_static_lib_path}")
 
 # List of absolute paths to libraries that should be bundled with the plugin.
 # This list could contain prebuilt libraries, or libraries created by an
