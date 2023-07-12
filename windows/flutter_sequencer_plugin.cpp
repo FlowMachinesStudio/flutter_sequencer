@@ -12,7 +12,6 @@
 
 #include <memory>
 #include <sstream>
-
 namespace flutter_sequencer {
 
 // static
@@ -52,9 +51,23 @@ void FlutterSequencerPlugin::HandleMethodCall(
       version_stream << "7";
     }
     result->Success(flutter::EncodableValue(version_stream.str()));
-  } else if  (method_name.compare("setupAssetManager") == 0) {
+  } else if (method_name.compare("setupAssetManager") == 0) {
     result->Success(0);
-  } else {
+  } else if (method_name.compare("normalizeAssetDir") == 0) {
+    const auto *arguments =
+        std::get_if<flutter::EncodableMap>(method_call.arguments());
+    if (arguments) {
+      auto text_it = arguments->find(flutter::EncodableValue("assetDir"));
+      if ((text_it != arguments->end()))
+      {
+        std::string asset_dir = std::get<std::string>(text_it->second);
+        result->Success(flutter::EncodableValue(asset_dir));
+      }
+    }
+  } else if (method_name.compare("listAudioUnits") == 0) {
+      std::vector<flutter::EncodableValue> dartStrings;
+      result->Success(dartStrings);
+    } else {
     OutputDebugStringA(method_name.c_str());
     result->NotImplemented();
   }

@@ -23,34 +23,39 @@ void setInstrumentOutputFormat(IInstrument* instrument) {
     instrument->setOutputFormat(sampleRate, isStereo);
 }
 
-void __log_print(const char* level,
-    const char* appName, const char* messageFormat, ...) {
+void __log_print(const char* file,
+    const int line,
+    const char* level, const char* appName, const char* messageFormat, ...) {
     // FIXME:...
-    /*
-    std::cout << "[" << level << "] " << appName << ": ";
+    char buffer[4096];
     va_list args;
     va_start(args, messageFormat);
-    vprintf(messageFormat, args);
+    vsprintf_s(buffer, sizeof(buffer), messageFormat, args);
     va_end(args);
 
-    std::cout << std::endl;
-    */
-}
+    char output[4096];
+    sprintf_s(output, sizeof(output), "%s(%d): [%s] %s: %s\n", file, line,
+        level, appName, buffer);
 
+    OutputDebugStringA(output);
+}
 
 extern "C" {
     DLL_EXPORT
     void setup_engine(Dart_Port sampleRateCallbackPort) {
+        LOGI("dll_export: setup_engine");
         engine = std::make_unique<WinEngine>(sampleRateCallbackPort);
     }
 
     DLL_EXPORT
     void destroy_engine() {
+        LOGI("dll_export: destroy_engine");
         engine.reset();
     }
 
     DLL_EXPORT
     void add_track_sf2(const char* filename, bool isAsset, int32_t presetIndex, Dart_Port callbackPort) {
+        LOGI("dll_export: add_track_sf2");
         check_engine();
 
         std::thread([=]() {
@@ -92,7 +97,7 @@ extern "C" {
             }
         }).detach();
 #else // USE_SFIZZ
-        LOGE("sfizz: disabled");
+        LOGE("add_track_sfz: sfizz: disabled");
 #endif // USE_SFIZZ
     }
 
@@ -117,12 +122,13 @@ extern "C" {
             }
         }).detach();
 #else // USE_SFIZZ
-        LOGE("sfizz: disabled");
+        LOGE("add_track_sfz_string: sfizz: disabled");
 #endif // USE_SFIZZ
     }
 
 DLL_EXPORT
     void remove_track(track_index_t trackIndex) {
+        LOGI("dll_export: remove_track");
         check_engine();
 
         engine->mSchedulerMixer.removeTrack(trackIndex);
@@ -130,6 +136,7 @@ DLL_EXPORT
 
     DLL_EXPORT
     void reset_track(track_index_t trackIndex) {
+        LOGI("dll_export: reset_track");
         check_engine();
 
         engine->mSchedulerMixer.resetTrack(trackIndex);
@@ -137,6 +144,7 @@ DLL_EXPORT
 
     DLL_EXPORT
     float get_track_volume(track_index_t trackIndex) {
+        LOGI("dll_export: get_track_volume");
         check_engine();
 
         return engine->mSchedulerMixer.getLevel(trackIndex);
@@ -144,6 +152,7 @@ DLL_EXPORT
 
     DLL_EXPORT
     int32_t get_position() {
+        LOGI("dll_export: get_position");
         check_engine();
 
         return engine->mSchedulerMixer.getPosition();
@@ -151,6 +160,7 @@ DLL_EXPORT
 
     DLL_EXPORT
     uint64_t get_last_render_time_us() {
+        LOGI("dll_export: get_last_render_time_us");
         check_engine();
 
         return engine->mSchedulerMixer.getLastRenderTimeUs();
@@ -158,11 +168,13 @@ DLL_EXPORT
 
     DLL_EXPORT
     uint32_t get_buffer_available_count(track_index_t trackIndex) {
+        LOGI("dll_export: get_buffer_available_count");
         return engine->mSchedulerMixer.getBufferAvailableCount(trackIndex);
     }
 
     DLL_EXPORT
     void handle_events_now(track_index_t trackIndex, const uint8_t* eventData, int32_t eventsCount) {
+        LOGI("dll_export: handle_events_now");
         check_engine();
 
         SchedulerEvent *events= new SchedulerEvent[eventsCount];
@@ -175,6 +187,7 @@ DLL_EXPORT
 
     DLL_EXPORT
     int32_t schedule_events(track_index_t trackIndex, const uint8_t* eventData, int32_t eventsCount) {
+        LOGI("dll_export: schedule_events");
         check_engine();
 
         SchedulerEvent *events = new SchedulerEvent[eventsCount];
@@ -188,22 +201,24 @@ DLL_EXPORT
 
     DLL_EXPORT
     void clear_events(track_index_t trackIndex, position_frame_t fromFrame) {
+        LOGI("dll_export: clear_events");
         check_engine();
+
 
         return engine->mSchedulerMixer.clearEvents(trackIndex, fromFrame);
     }
 
     DLL_EXPORT
     void engine_play() {
+        LOGI("dll_export: engine_play");
         check_engine();
-
         engine->play();
     }
 
     DLL_EXPORT
     void engine_pause() {
+        LOGI("dll_export: engine_pause");
         check_engine();
-
         engine->pause();
     }
 }
