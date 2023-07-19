@@ -22,7 +22,7 @@ WinEngine::WinEngine(Dart_Port sampleRateCallbackPort) {
     mOutputAudioSpec.freq = 44100;
     mOutputAudioSpec.format = AUDIO_F32;
     mOutputAudioSpec.channels = 2;
-    mOutputAudioSpec.samples = 4096;
+    mOutputAudioSpec.samples = kBufferSize / mOutputAudioSpec.channels;
     mOutputAudioSpec.callback = AudioCallback;
     mOutputAudioSpec.userdata = this;
 
