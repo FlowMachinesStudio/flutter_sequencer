@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.14)
 
 # Project-level configuration.
 set(PROJECT_NAME "flutter_sequencer")
-project(${PROJECT_NAME} LANGUAGES CXX)
+project(${PROJECT_NAME} LANGUAGES C)
 
 # This value is used when generating builds using this plugin, so it must
 # not be changed
