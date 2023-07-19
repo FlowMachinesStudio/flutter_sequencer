@@ -14563,6 +14563,7 @@ FindAllDevs(LPGUID guid, LPCWSTR desc, LPCWSTR module, LPVOID data)
     return TRUE;
 }
 
+#pragma warning(disable: 4152)
 static void
 DSOUND_DetectDevices(int iscapture, SDL_AddAudioDevice addfn)
 {
@@ -15943,7 +15944,7 @@ prepare_audiospec(const SDL_AudioSpec * orig, SDL_AudioSpec * prepared)
             while (power2 < samples) {
                 power2 *= 2;
             }
-            prepared->samples = power2;
+            prepared->samples = (Uint16)(power2 & 0xff);
         }
     }
 

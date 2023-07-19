@@ -17,6 +17,7 @@ INCLUDE_DIRECTORIES(${TSF_DIR}
   ../shared/Classes/CallbackManager
   ../shared/Classes/Scheduler
   ../shared/Classes/IInstrument
+  ./src/main/cpp/WinEngine/minisdl
   ../shared
   # ./third_party/sfizz/src
   ./src/main/cpp
@@ -35,8 +36,8 @@ list(APPEND PLUGIN_SOURCES
   "../shared/Classes/Scheduler/SchedulerEvent.cpp"
   "./src/main/cpp/WinEngine/WinEngine.h"
   "./src/main/cpp/WinEngine/WinEngine.cpp"
-  "./src/main/cpp/WinEngine/Oboe_win.h"
-  "./src/main/cpp/WinEngine/Oboe_win.cpp"
+  "./src/main/cpp/WinEngine/minisdl/minisdl_audio.h"
+  "./src/main/cpp/WinEngine/minisdl/minisdl_audio.c"
   "../shared/Classes/IInstrument/IInstrument.h"
   # "../shared/Classes/IInstrument/SharedInstruments/SfizzSamplerInstrument.h"
   "./src/main/cpp/WinInstruments/Mixer.h"

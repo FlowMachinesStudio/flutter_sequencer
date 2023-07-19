@@ -1,17 +1,17 @@
 #ifndef WIN_ENGINE_H
 #define WIN_ENGINE_H
 
-#include "./Oboe_win.h"
 #include "CallbackManager.h"
 #include "IInstrument.h"
 #include "../WinInstruments/Mixer.h"
+#include "minisdl_audio.h"
 
-class WinEngine : public oboe::AudioStreamCallback {
+class WinEngine {
 public:
     explicit WinEngine(Dart_Port sampleRateCallbackPort);
     ~WinEngine();
 
-    oboe::DataCallbackResult onAudioReady(oboe::AudioStream *oboeStream, void *audioData, int32_t numFrames) override;
+    void audioCallback(Uint8 *stream, int len);
 
     int32_t getSampleRate();
     int32_t getChannelCount();
@@ -21,7 +21,8 @@ public:
 
     Mixer mSchedulerMixer;
 private:
-    oboe::ManagedStream mOutStream;
+    SDL_AudioSpec mOutputAudioSpec;
+    SDL_mutex* mSdlMutex;
 
     static int constexpr kSampleRate = 44100;
 };

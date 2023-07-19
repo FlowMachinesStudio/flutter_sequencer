@@ -2,77 +2,71 @@
 #include "WinEngine.h"
 #include "../Utils/Logging.h"
 
-oboe::DataCallbackResult WinEngine::onAudioReady(oboe::AudioStream *oboeStream, void *audioData, int32_t numFrames) {
-    float* outputBuffer = static_cast<float *>(audioData);
-
+static void AudioCallback(void* data, Uint8 *stream, int len) {
+    WinEngine* pWinEngine = static_cast<WinEngine*>(data);
+    if (!pWinEngine) {
+        return;
+    }
+    pWinEngine->audioCallback(stream, len);
+}
+void WinEngine::audioCallback(Uint8 *stream, int len) {
+    float* outputBuffer = reinterpret_cast<float *>(stream);
+    int32_t numFrames = (len / (2 * sizeof(float))); //2 output channels
+    SDL_LockMutex(mSdlMutex); // really need?
     mSchedulerMixer.renderAudio(outputBuffer, numFrames);
-
-    return oboe::DataCallbackResult::Continue;
+    SDL_UnlockMutex(mSdlMutex);
 }
 
 WinEngine::WinEngine(Dart_Port sampleRateCallbackPort) {
-    oboe::AudioStreamBuilder builder;
+    mSdlMutex = 0;
+    mOutputAudioSpec.freq = 44100;
+    mOutputAudioSpec.format = AUDIO_F32;
+    mOutputAudioSpec.channels = 2;
+    mOutputAudioSpec.samples = 4096;
+    mOutputAudioSpec.callback = AudioCallback;
+    mOutputAudioSpec.userdata = this;
 
-    builder.setSharingMode(oboe::SharingMode::Shared)
-            ->setPerformanceMode(oboe::PerformanceMode::LowLatency)
-            ->setChannelCount(oboe::ChannelCount::Stereo)
-            ->setSampleRate(kSampleRate)
-            ->setFormat(oboe::AudioFormat::Float)
-            ->setCallback(this)
-            ->openManagedStream(mOutStream);
+  	if (SDL_AudioInit(0) < 0) {
+        LOGE("Could not initialize audio hardware or driver\n");
+		return;
+	}
 
-    mSchedulerMixer.setChannelCount(mOutStream->getChannelCount());
-    callbackToDartInt32(sampleRateCallbackPort, mOutStream->getSampleRate());
+	mSdlMutex = SDL_CreateMutex();
+	if (SDL_OpenAudio(&mOutputAudioSpec, 0) < 0)
+	{
+		LOGE("Could not open the audio hardware or the desired audio output format\n");
+		return;
+	}
 
+    mSchedulerMixer.setChannelCount(mOutputAudioSpec.channels);
+    callbackToDartInt32(sampleRateCallbackPort, mOutputAudioSpec.freq);
 };
 
 WinEngine::~WinEngine() {
     mSchedulerMixer.pause();
-
-    oboe::Result result = mOutStream->close();
-
-    if (result != oboe::Result::OK){
-        LOGE("Failed to close stream. Error: %s", convertToText(result));
-        return;
-    }
+    SDL_PauseAudio(1);
+    SDL_CloseAudio();
 }
 
 int32_t WinEngine::getSampleRate() {
-    return mOutStream->getSampleRate();
+    return mOutputAudioSpec.freq;
 }
 
 int32_t WinEngine::getChannelCount() {
-    return mOutStream->getChannelCount();
+    return mOutputAudioSpec.channels;
 }
 
 int32_t WinEngine::getBufferSize() {
-    return mOutStream->getBufferSizeInFrames();
+    // FIXME:
+    return mOutputAudioSpec.size;
 }
 
 void WinEngine::play() {
     mSchedulerMixer.play();
-
-    auto streamState = mOutStream->getState();
-
-    // Don't request start if stream is already starting or started
-    if (streamState != oboe::StreamState(3)
-        && streamState != oboe::StreamState(4)) {
-        oboe::Result result = mOutStream->requestStart();
-
-        if (result != oboe::Result::OK){
-            LOGE("Failed to start stream. Error: %s", convertToText(result));
-            return;
-        }
-    }
+    SDL_PauseAudio(0);
 }
 
 void WinEngine::pause() {
     mSchedulerMixer.pause();
-
-    oboe::Result result = mOutStream->requestPause();
-
-    if (result != oboe::Result::OK){
-        LOGE("Failed to pause stream. Error: %s", convertToText(result));
-        return;
-    }
+    SDL_PauseAudio(1);
 }
