@@ -81,6 +81,13 @@ task cloneThirdPartyRepos {
 
 preBuild.dependsOn cloneThirdPartyRepos
 
+task copyStbVorbis(type: Copy) {
+    from 'third_party/sfizz/external/st_audiofile/thirdparty/dr_libs/tests/external/miniaudio/extras/stb_vorbis.c'
+    into 'third_party/sfizz/external/st_audiofile/src'
+}
+
+preBuild.dependsOn copyStbVorbis
+
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
