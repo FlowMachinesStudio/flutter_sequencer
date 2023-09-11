@@ -67,7 +67,7 @@ public:
 
         if (statusCode == 0x9) {
             // Note On
-            tsf_note_on(mTsf, presetIndex, data1, data2 / 255.0);
+            tsf_note_on(mTsf, presetIndex, data1, data2 / 127.0);
         } else if (statusCode == 0x8) {
             // Note Off
             tsf_note_off(mTsf, presetIndex, data1);
