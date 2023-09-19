@@ -31,13 +31,13 @@ public:
         return true;
     }
 
-    void setTsfOutputFormat() {
+    void setTsfOutputFormat(float gain_db = 0.0f) {
         if (mTsf != nullptr) {
-            tsf_set_output(mTsf, mIsStereo ? TSF_STEREO_INTERLEAVED : TSF_MONO, mSampleRate);
+            tsf_set_output(mTsf, mIsStereo ? TSF_STEREO_INTERLEAVED : TSF_MONO, mSampleRate, gain_db);
         }
     }
 
-    bool loadSf2File(const char* path, bool isAsset, int32_t presetIndex) {
+    bool loadSf2File(const char* path, bool isAsset, int32_t presetIndex, int gain_db) {
         this->presetIndex = presetIndex;
 
         if (isAsset) {
@@ -52,7 +52,7 @@ public:
             mTsf = tsf_load_filename(path);
         }
 
-        setTsfOutputFormat();
+        setTsfOutputFormat((float)gain_db);
 
         return mTsf != nullptr;
     }

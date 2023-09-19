@@ -28,7 +28,7 @@ class Track {
 
     if (instrument is Sf2Instrument) {
       id = await NativeBridge.addTrackSf2(
-          instrument.idOrPath, instrument.isAsset, instrument.presetIndex);
+          instrument.idOrPath, instrument.isAsset, instrument.presetIndex, instrument.gain_db);
     } else if (instrument is SfzInstrument) {
       final sfzFile = File(instrument.idOrPath);
       String? normalizedSfzPath;

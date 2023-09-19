@@ -52,11 +52,15 @@ class RuntimeSfzInstrument extends Instrument {
 /// Describes an instrument in SF2 format. Will be played by the SoundFont
 /// player for the current platform.
 class Sf2Instrument extends Instrument {
+  int gain_db = 0;
   Sf2Instrument(
       {required String path,
       required bool isAsset,
-      int presetIndex = DEFAULT_PATCH_NUMBER})
-      : super(path, isAsset, presetIndex: presetIndex);
+      int presetIndex = DEFAULT_PATCH_NUMBER,
+	  int gain_db = 0})
+      : super(path, isAsset, presetIndex: presetIndex) {
+	this.gain_db = gain_db;
+  }
 }
 
 /// Describes an AudioUnit instrument (Apple platforms only.)

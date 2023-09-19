@@ -13,6 +13,7 @@ String opcodeMapToString(Map<String, String>? opcodeMap) {
 class SfzRegion {
   SfzRegion({
     this.sample,
+	this.volume,
     this.key,
     this.lokey,
     this.hikey,
@@ -24,6 +25,7 @@ class SfzRegion {
   });
 
   String? sample;
+  int? volume;
   int? key;
   int? lokey, hikey;
   int? lovel, hivel;
@@ -33,6 +35,7 @@ class SfzRegion {
   String buildString() {
     return '<region>\n' +
         (sample != null ? 'sample=$sample\n' : '') +
+		(volume != null ? 'volume=$volume\n' : '') +
         (key != null ? 'key=$key\n' : '') +
         (lokey != null ? 'lokey=$lokey\n' : '') +
         (hikey != null ? 'hikey=$hikey\n' : '') +

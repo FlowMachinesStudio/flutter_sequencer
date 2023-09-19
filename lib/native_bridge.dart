@@ -26,8 +26,8 @@ final nDestroyEngine = nativeLib
     .lookupFunction<Void Function(), void Function()>('destroy_engine');
 
 final nAddTrackSf2 = nativeLib.lookupFunction<
-    Void Function(Pointer<Utf8>, Int8, Int32, Int64),
-    void Function(Pointer<Utf8>, int, int, int)>('add_track_sf2');
+    Void Function(Pointer<Utf8>, Int8, Int32, Int64, Int8),
+    void Function(Pointer<Utf8>, int, int, int, int)>('add_track_sf2');
 
 final nAddTrackSfz = nativeLib.lookupFunction<
     Void Function(Pointer<Utf8>, Pointer<Utf8>, Int64),
@@ -113,10 +113,10 @@ class NativeBridge {
   }
 
   static Future<int> addTrackSf2(
-      String filename, bool isAsset, int patchNumber) {
+      String filename, bool isAsset, int patchNumber, int gain_db) {
     final filenameUtf8Ptr = filename.toNativeUtf8();
     return singleResponseFuture<int>((port) => nAddTrackSf2(
-        filenameUtf8Ptr, isAsset ? 1 : 0, patchNumber, port.nativePort));
+        filenameUtf8Ptr, isAsset ? 1 : 0, patchNumber, port.nativePort, gain_db));
   }
 
   static Future<int> addTrackSfz(String sfzPath, String? tuningPath) {

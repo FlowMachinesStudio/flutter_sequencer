@@ -32,14 +32,14 @@ extern "C" {
     }
 
     __attribute__((visibility("default"))) __attribute__((used))
-    void add_track_sf2(const char* filename, bool isAsset, int32_t presetIndex, Dart_Port callbackPort) {
+    void add_track_sf2(const char* filename, bool isAsset, int32_t presetIndex, Dart_Port callbackPort, int gain_db) {
         check_engine();
 
         std::thread([=]() {
             auto sf2Instrument = new SoundFontInstrument();
             setInstrumentOutputFormat(sf2Instrument);
 
-            auto didLoad = sf2Instrument->loadSf2File(filename, isAsset, presetIndex);
+            auto didLoad = sf2Instrument->loadSf2File(filename, isAsset, presetIndex, gain_db);
 
             if (didLoad) {
                 auto trackIndex = engine->mSchedulerMixer.addTrack(sf2Instrument);
