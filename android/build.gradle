@@ -82,10 +82,7 @@ preBuild.dependsOn cloneThirdPartyRepos
 
 task updateSfizzSubmodule(type: Exec) {
     executable "sh"
-    args "-c", "git -C third_party/sfizz/external/abseil-cpp checkout 20220623.0"
-    args "-c", "git -C third_party/sfizz/external/filesystem checkout v1.1.2-403-g8a2edd6"
-    args "-c", "git -C third_party/sfizz/external/simde checkout v0.7.4-19-g2bf459d4"
-    args "-c", "git -C third_party/sfizz/external/st_audiofile/thirdparty/dr_libs checkout 4b3d078"
+    args "-c", "git -C third_party/sfizz submodule update --init --recursive"
 }
 preBuild.dependsOn updateSfizzSubmodule
 
