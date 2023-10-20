@@ -76,16 +76,23 @@ void cloneThirdPartyRepo(String name, String uri, String commit) {
 task cloneThirdPartyRepos {
     cloneThirdPartyRepo('oboe', 'https://github.com/google/oboe', '06ec23e4f6bc00ba7eea9b84e299f9200a598838')
     cloneThirdPartyRepo('TinySoundFont', 'https://github.com/schellingb/TinySoundFont.git', 'bf574519e601202c3a9d27a74f345921277eed39')
-	cloneThirdPartyRepo('sfizz', 'https://github.com/FlowMachinesStudio/sfizz.git', 'ab79889b13bdb97b67f82b88cd37ffea310ba88a')
+    cloneThirdPartyRepo('sfizz', 'https://github.com/FlowMachinesStudio/sfizz.git', 'ab79889b13bdb97b67f82b88cd37ffea310ba88a')
 }
-
 preBuild.dependsOn cloneThirdPartyRepos
+
+task updateSfizzSubmodule(type: Exec) {
+    executable "sh"
+    args "-c", "git -C third_party/sfizz/external/abseil-cpp checkout 20220623.0"
+    args "-c", "git -C third_party/sfizz/external/filesystem checkout v1.1.2-403-g8a2edd6"
+    args "-c", "git -C third_party/sfizz/external/simde checkout v0.7.4-19-g2bf459d4"
+    args "-c", "git -C third_party/sfizz/external/st_audiofile/thirdparty/dr_libs checkout 4b3d078"
+}
+preBuild.dependsOn updateSfizzSubmodule
 
 task copyStbVorbis(type: Copy) {
     from 'third_party/sfizz/external/st_audiofile/thirdparty/dr_libs/tests/external/miniaudio/extras/stb_vorbis.c'
     into 'third_party/sfizz/external/st_audiofile/src'
 }
-
 preBuild.dependsOn copyStbVorbis
 
 dependencies {
