@@ -82,7 +82,17 @@ preBuild.dependsOn cloneThirdPartyRepos
 
 task updateSfizzSubmodule(type: Exec) {
     executable "sh"
-    args "-c", "git -C third_party/sfizz submodule update --init --recursive"
+    args "-c", "git -C third_party/sfizz/external/abseil-cpp checkout refs/tags/20220623.0"
+    args "-c", "git -C third_party/sfizz/external/filesystem checkout refs/tags/v1.1.2"
+    args "-c", "git -C third_party/sfizz/external/simde checkout refs/tags/v0.7.2"
+    args "-c", "git -C third_party/sfizz/external/st_audiofile/thirdparty/dr_libs checkout cac1785cee4abb455817b43d5dee33b49d61be2f"
+    args "-c", "git -C third_party/sfizz/external/st_audiofile/thirdparty/libaiff checkout 78864a4a2e769e426be8cfd78ae7f5f72e236c33"
+    args "-c", "git -C third_party/sfizz/external/st_audiofile/thirdparty/stb_vorbis checkout fc0bd698b26888da0a632da33f4c49b90763e69b"
+    args "-c", "git -C third_party/sfizz/external/vstgui4 checkout 2cf61f5e1fefe4dcd3d19119ddf7b182719a2a5b"
+    args "-c", "git -C third_party/sfizz/external/VST_SDK/VST3_SDK/base checkout 985fe019276ee03c2751a1736ba3b390678e29f2"
+    args "-c", "git -C third_party/sfizz/external/VST_SDK/VST3_SDK/pluginterfaces checkout b8566ef3b2a0cba60a96e3ef2001224c865c8b36"
+    args "-c", "git -C third_party/sfizz/external/VST_SDK/VST3_SDK/public.sdk checkout d69d011fa08c3977928f7da0010f8938f93fd370"
+    args "-c", "git -C third_party/sfizz/external/sfzt_auwrapper checkout 014311ae45b86571e1ae3aaa03ebbd7db8b3a32e"
 }
 preBuild.dependsOn updateSfizzSubmodule
 
