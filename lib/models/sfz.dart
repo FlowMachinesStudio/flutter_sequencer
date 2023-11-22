@@ -119,6 +119,7 @@ class Sfz {
   final List<SfzEffect> effects;
   final List<SfzCurve> curves;
   final SfzGlobal? global;
+  final String externalContent;
 
   Sfz({
     required this.groups,
@@ -126,6 +127,7 @@ class Sfz {
     this.effects = const [],
     this.curves = const [],
     this.global,
+    this.externalContent = ''
   });
 
   void _setNoteRanges() {
@@ -158,6 +160,9 @@ class Sfz {
   }
 
   String buildString() {
+    if (externalContent.isNotEmpty) {
+      return externalContent;
+	}
     _setNoteRanges();
 
     return (global?.buildString() ?? '') +
